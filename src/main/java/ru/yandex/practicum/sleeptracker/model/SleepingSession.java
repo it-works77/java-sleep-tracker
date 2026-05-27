@@ -1,5 +1,6 @@
 package ru.yandex.practicum.sleeptracker.model;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -9,15 +10,24 @@ import java.time.format.DateTimeFormatter;
 public class SleepingSession {
     private final LocalDateTime sessionStart;
     private final LocalDateTime sessionEnd;
+    private final Duration duration;
     private final SleepQuality quality;
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public int getDurationInMinutes() {
+        return (int) duration.toMinutes();
+    }
 
     public SleepingSession(String sessionStartText, String sessionEndText, String qualityText,
                            DateTimeFormatter logDatetime) {
         sessionStart = LocalDateTime.parse(sessionStartText.trim(), logDatetime);
         sessionEnd = LocalDateTime.parse(sessionEndText.trim(), logDatetime);
         quality = SleepQuality.valueOf(qualityText.trim());
-        // TODO calculate duration?
 
+        duration = Duration.between(sessionStart, sessionEnd);
     }
 
     public LocalDateTime getSessionStart() {

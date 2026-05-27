@@ -1,6 +1,7 @@
 package ru.yandex.practicum.sleeptracker;
 
 import ru.yandex.practicum.sleeptracker.functions.ChronotypeAnalysis;
+import ru.yandex.practicum.sleeptracker.functions.SessionMaxDurationAnalysis;
 import ru.yandex.practicum.sleeptracker.functions.SessionNumberAnalysis;
 import ru.yandex.practicum.sleeptracker.functions.SleepingAnalysis;
 import ru.yandex.practicum.sleeptracker.model.SleepAnalysisResult;
@@ -18,6 +19,7 @@ public class SleepTrackerApp {
         ArrayList<SleepingAnalysis> analyticFunctions = new ArrayList<>();
         analyticFunctions.add(new SessionNumberAnalysis());
         analyticFunctions.add(new ChronotypeAnalysis());
+        analyticFunctions.add(new SessionMaxDurationAnalysis());
 
         SleepTracker app = new SleepTracker(SLEEP_LOG_FILEPATH, analyticFunctions);
         app.init();
