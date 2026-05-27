@@ -27,6 +27,6 @@ class SleepTrackerTest {
     }
 
     @Test
-    void run() {
+    void getAnalytics() {
     }
 }

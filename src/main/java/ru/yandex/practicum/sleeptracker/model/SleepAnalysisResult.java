@@ -5,11 +5,11 @@ package ru.yandex.practicum.sleeptracker.model;
  * каждой функции её текстовое описание, кроме непосредственно вычисленного значения.
  * Для этого вам понадобится создать дополнительный класс-обёртку для возвращаемого значения.
  */
-public class SleepAnalysisResult {
+public class SleepAnalysisResult<T> {
     private final String description;
-    private final Integer result;
+    private final T result;
 
-    public SleepAnalysisResult(String description, Integer result) {
+    public SleepAnalysisResult(String description, T result) {
         this.description = description;
         this.result = result;
     }
@@ -18,8 +18,12 @@ public class SleepAnalysisResult {
         return description;
     }
 
-    public Integer getResult() {
+    public T getResult() {
         return result;
     }
 
+    @Override
+    public String toString() {
+        return description + ": " + result;
+    }
 }
