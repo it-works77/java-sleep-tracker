@@ -14,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 public class SleepTracker {
     private static final int LOG_TOKENS_NUMBER = 3;
@@ -58,10 +59,10 @@ public class SleepTracker {
         }
     }
 
-    public List<? extends SleepAnalysisResult<?>> getAnalytics() {
+    public List<SleepAnalysisResult<?>> getAnalytics() {
 //        TODO run functions here
         return analyticFunctions.stream()
                 .map(func -> func.get(sleepingSessionJournal))
-                .toList();
+                .collect(Collectors.toList());
     }
 }

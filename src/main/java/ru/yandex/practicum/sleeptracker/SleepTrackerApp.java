@@ -24,7 +24,7 @@ public class SleepTrackerApp {
 
         /* Функции должны запускаться в методе main, а результат их выполнения должен выводиться на экран.
         Весь код вывода должен располагаться в методе main.*/
-        List<? extends SleepAnalysisResult<?>> results = app.getAnalytics();
+        List<SleepAnalysisResult<?>> results = app.getAnalytics();
         results.stream().forEach(System.out::println);
     }
 }
