@@ -15,11 +15,11 @@ public class SleepTrackerApp {
 
         ArrayList<SleepingAnalysis> analyticFunctions = new ArrayList<>();
         analyticFunctions.add(new SessionNumberAnalysis());
-        analyticFunctions.add(new ChronotypeAnalysis());
         analyticFunctions.add(new SessionMaxDurationAnalysis());
         analyticFunctions.add(new SessionMinDurationAnalysis());
         analyticFunctions.add(new SessionAvgDurationAnalysis());
         analyticFunctions.add(new SessionBadQualityCounterAnalysis());
+        analyticFunctions.add(new UserChronotypeAnalysis());
 
         SleepTracker app = new SleepTracker(SLEEP_LOG_FILEPATH, analyticFunctions);
         app.init();

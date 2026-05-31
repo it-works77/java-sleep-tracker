@@ -5,7 +5,6 @@ import ru.yandex.practicum.sleeptracker.model.SleepQuality;
 import ru.yandex.practicum.sleeptracker.model.SleepingSession;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.TreeMap;
 
 public class SessionBadQualityCounterAnalysis implements SleepingAnalysis {
