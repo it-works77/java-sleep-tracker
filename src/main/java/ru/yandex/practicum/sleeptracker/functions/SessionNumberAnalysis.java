@@ -8,9 +8,11 @@ import java.time.LocalDateTime;
 import java.util.TreeMap;
 
 public class SessionNumberAnalysis implements SleepingAnalysis {
+    private static final String ANALYSIS_DESCRIPTION = "Хронотип пользователя";
+
     @Override
     public SleepAnalysisResult<Chronotype> get(TreeMap<LocalDateTime, SleepingSession> sessions) {
         // TODO Implement this!
-        return new SleepAnalysisResult<Chronotype>("Хронотип пользователя", Chronotype.EARLY_BIRD);
+        return new SleepAnalysisResult<Chronotype>(ANALYSIS_DESCRIPTION, Chronotype.EARLY_BIRD);
     }
 }

@@ -7,14 +7,14 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.TreeMap;
 
-public class SessionMaxDurationAnalysis implements SleepingAnalysis {
-    private static final String ANALYSIS_DESCRIPTION = "Максимальная продолжительность сессии (в минутах)";
+public class SessionMinDurationAnalysis implements SleepingAnalysis {
+    private static final String ANALYSIS_DESCRIPTION = "Минимальная продолжительность сессии (в минутах)";
 
     @Override
     public SleepAnalysisResult<?> get(TreeMap<LocalDateTime, SleepingSession> sessions) {
         Optional<Integer> result = sessions.values().stream()
                 .map(SleepingSession::getDurationInMinutes)
-                .max(Integer::compare);
+                .min(Integer::compare);
 
         return result.map(integer ->
                         new SleepAnalysisResult<>(ANALYSIS_DESCRIPTION,
