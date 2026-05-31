@@ -19,6 +19,7 @@ public class SleepTrackerApp {
         analyticFunctions.add(new SessionMaxDurationAnalysis());
         analyticFunctions.add(new SessionMinDurationAnalysis());
         analyticFunctions.add(new SessionAvgDurationAnalysis());
+        analyticFunctions.add(new SessionBadQualityCounterAnalysis());
 
         SleepTracker app = new SleepTracker(SLEEP_LOG_FILEPATH, analyticFunctions);
         app.init();
