@@ -1,7 +1,6 @@
 package ru.yandex.practicum.sleeptracker.functions;
 
 import ru.yandex.practicum.sleeptracker.model.SleepAnalysisResult;
-import ru.yandex.practicum.sleeptracker.model.SleepQuality;
 import ru.yandex.practicum.sleeptracker.model.SleepingSession;
 
 import java.time.LocalDateTime;
@@ -11,7 +10,7 @@ public class SessionNumberAnalysis implements SleepingAnalysis {
     private static final String ANALYSIS_DESCRIPTION = "Количество сессий сна";
 
     @Override
-    public SleepAnalysisResult<?> get(TreeMap<LocalDateTime, SleepingSession> sessions) {
+    public SleepAnalysisResult<Integer> get(TreeMap<LocalDateTime, SleepingSession> sessions) {
         return new SleepAnalysisResult<>(ANALYSIS_DESCRIPTION, sessions.size());
     }
 }

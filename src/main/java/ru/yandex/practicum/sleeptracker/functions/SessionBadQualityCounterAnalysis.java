@@ -11,7 +11,7 @@ public class SessionBadQualityCounterAnalysis implements SleepingAnalysis {
     private static final String ANALYSIS_DESCRIPTION = "Количество сессий с плохим качеством сна";
 
     @Override
-    public SleepAnalysisResult<?> get(TreeMap<LocalDateTime, SleepingSession> sessions) {
+    public SleepAnalysisResult<Long> get(TreeMap<LocalDateTime, SleepingSession> sessions) {
         long result = sessions.values().stream()
                 .filter(s -> s.getQuality() == SleepQuality.BAD)
                 .count();

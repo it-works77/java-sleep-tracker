@@ -11,7 +11,7 @@ public class SessionAvgDurationAnalysis implements SleepingAnalysis {
     private static final String ANALYSIS_DESCRIPTION = "Средняя продолжительность сессии (в минутах)";
 
     @Override
-    public SleepAnalysisResult<?> get(TreeMap<LocalDateTime, SleepingSession> sessions) {
+    public SleepAnalysisResult<Integer> get(TreeMap<LocalDateTime, SleepingSession> sessions) {
 
         int sessionsNumber = sessions.size();
 

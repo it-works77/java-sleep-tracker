@@ -11,7 +11,7 @@ public class SessionMinDurationAnalysis implements SleepingAnalysis {
     private static final String ANALYSIS_DESCRIPTION = "Минимальная продолжительность сессии (в минутах)";
 
     @Override
-    public SleepAnalysisResult<?> get(TreeMap<LocalDateTime, SleepingSession> sessions) {
+    public SleepAnalysisResult<Integer> get(TreeMap<LocalDateTime, SleepingSession> sessions) {
         Optional<Integer> result = sessions.values().stream()
                 .map(SleepingSession::getDurationInMinutes)
                 .min(Integer::compare);
