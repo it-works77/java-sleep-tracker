@@ -16,6 +16,10 @@ public class SessionSleeplessNightsAnalysis implements SleepingAnalysis {
     @Override
     public SleepAnalysisResult<Integer> get(TreeMap<LocalDateTime, SleepingSession> sessions) {
 
+        if (sessions.isEmpty()) {
+            return new SleepAnalysisResult<>(ANALYSIS_DESCRIPTION);
+        }
+
         int totalNights = Period.between(LocalDate.from(sessions.firstEntry().getValue()
                         .getSessionStart()),
                 LocalDate.from(sessions.lastEntry().getValue()
@@ -28,7 +32,6 @@ public class SessionSleeplessNightsAnalysis implements SleepingAnalysis {
                  * Достаточно проверить, что уснул после 6:00 и проснулся в тот же день */
                 .filter(s -> !(s.getSessionStart().getDayOfYear() == s.getSessionEnd().getDayOfYear()
                                 && s.getSessionStart().getHour() >= 6
-                                && s.getSessionStart().getMinute() > 0
                         )
                 )
                 .peek(session -> System.out.println(session.getSessionStart() + " - " + session.getSessionEnd()))
@@ -36,11 +39,9 @@ public class SessionSleeplessNightsAnalysis implements SleepingAnalysis {
                 .filter(s ->
                         // лёг спать в один день, а проснулся на следующий
                         (s.getSessionEnd().getDayOfYear() == s.getSessionStart().getDayOfYear() + 1)
-                                // или лёг спать после 00:00, но до 6:00
-                                || (s.getSessionStart().getHour() < 6
-                                && s.getSessionEnd().getHour() >= 6
-                                && s.getSessionEnd().getMinute() > 0
-                        )
+                                // или лёг спать после 00:00, но до 6:00, проснулся в тот же день
+                                || (s.getSessionEnd().getDayOfYear() == s.getSessionStart().getDayOfYear()
+                                    && s.getSessionStart().getHour() < 6)
                 )
                 .toList();
 
@@ -54,6 +55,12 @@ public class SessionSleeplessNightsAnalysis implements SleepingAnalysis {
         if (sessions.firstEntry().getValue()
                 .getSessionStart().getHour() < 12) {
             totalNights++;
+        }
+
+        // Если только одна сессия сна, длительность в днях будет ноль.
+        // Но одна ночь должна быть засчитана (или предыдущая, или следующая)
+        if (totalNights < 1) {
+            totalNights = 1;
         }
 
         return new SleepAnalysisResult<>(ANALYSIS_DESCRIPTION, totalNights - nightsWithSleepCount);
