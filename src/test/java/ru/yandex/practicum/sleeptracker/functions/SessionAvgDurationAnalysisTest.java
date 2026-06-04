@@ -13,15 +13,15 @@ import java.util.TreeMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class SessionMaxDurationAnalysisTest {
+class SessionAvgDurationAnalysisTest {
     static final DateTimeFormatter LOG_DATETIME = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm");
     static TreeMap<LocalDateTime, SleepingSession> sessions;
-    static SessionMaxDurationAnalysis func;
+    static SessionAvgDurationAnalysis func;
 
     @BeforeAll
     static void setUpAll() {
         sessions = new TreeMap<>();
-        func = new SessionMaxDurationAnalysis();
+        func = new SessionAvgDurationAnalysis();
     }
 
     @BeforeEach
@@ -30,15 +30,15 @@ class SessionMaxDurationAnalysisTest {
     }
 
     @Test
-    void getMaxDurationForEmptySessions() {
+    void getAvgDurationForEmptySessions() {
         SleepAnalysisResult<Integer> result = func.get(sessions);
         assertEquals(Optional.empty(), result.getOrEmpty());
     }
 
     @Test
-    void getMaxDurationOfSessions() {
-        SleepingSession s = new SleepingSession("03.05.26 23:01",
-                "03.05.26 23:31",
+    void getAvgDurationOfSessions() {
+        SleepingSession s = new SleepingSession("03.05.26 23:31",
+                "04.05.26 00:01",
                 "BAD", LOG_DATETIME);
         sessions.put(s.getSessionStart(), s);
 
@@ -53,17 +53,32 @@ class SessionMaxDurationAnalysisTest {
         sessions.put(s.getSessionStart(), s);
 
         SleepAnalysisResult<Integer> result = func.get(sessions);
-        assertEquals(2880, result.getOrEmpty().get());
+        assertEquals(1000, result.getOrEmpty().get());
     }
 
     @Test
-    void getMaxDurationOfOneMinute() {
-        SleepingSession s = new SleepingSession("03.05.26 23:59",
-                "04.05.26 00:00",
+    void getAvgDurationOfEqualSessions() {
+        SleepingSession s = new SleepingSession("03.05.26 23:31",
+                "04.05.26 00:01",
                 "BAD", LOG_DATETIME);
         sessions.put(s.getSessionStart(), s);
 
+        s = new SleepingSession("05.05.26 23:31",
+                "06.05.26 00:01",
+                "GOOD", LOG_DATETIME);
+        sessions.put(s.getSessionStart(), s);
+
+        s = new SleepingSession("07.05.26 23:31",
+                "08.05.26 00:01",
+                "NORMAL", LOG_DATETIME);
+        sessions.put(s.getSessionStart(), s);
+
+        s = new SleepingSession("09.05.26 23:31",
+                "10.05.26 00:01",
+                "NORMAL", LOG_DATETIME);
+        sessions.put(s.getSessionStart(), s);
+
         SleepAnalysisResult<Integer> result = func.get(sessions);
-        assertEquals(1, result.getOrEmpty().get());
+        assertEquals(30, result.getOrEmpty().get());
     }
 }
