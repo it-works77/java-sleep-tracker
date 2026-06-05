@@ -6,6 +6,7 @@ import ru.yandex.practicum.sleeptracker.model.SleepingSession;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -14,7 +15,6 @@ public class UserChronotypeAnalysis implements SleepingAnalysis {
 
     @Override
     public SleepAnalysisResult<Chronotype> get(TreeMap<LocalDateTime, SleepingSession> sessions) {
-        // TODO Implement this!
         /*
          * Для каждой ночи на основе времени засыпания и пробуждения определите,
          * относится ночь к типу «сова», «жаворонок» или «голубь».
@@ -34,34 +34,35 @@ public class UserChronotypeAnalysis implements SleepingAnalysis {
          *  - лёг спать после 00:00, но до 6:00
          * */
 
+        if (sessions.isEmpty()) {
+            return new SleepAnalysisResult<>(ANALYSIS_DESCRIPTION);
+        }
+
         List<SleepingSession> sessionsWithoutSleeplessNightsAndDaily = sessions.values().stream()
                 /* Исключаем дневные сессии сна
                  * Интервал ночного сна с 6:00 до 00:00.
-                 * Достаточно проверить, что уснул после 6:00 и проснулся в тот же день */
-                .filter(s -> !(s.getSessionEnd().getDayOfYear() == s.getSessionStart().getDayOfYear()
+                 * Достаточно проверить, что уснул после 6:00 и проснулся в тот же день.
+                 * Это будет дневная сессия, исключаем */
+                .filter(s -> !(s.getSessionStart().getDayOfYear() == s.getSessionEnd().getDayOfYear()
                                 && s.getSessionStart().getHour() >= 6
-                                && s.getSessionStart().getMinute() > 0
                         )
                 )
-                /*
-                 *  Исключаем бессонные ночи
-                 * */
+                // Исключаем бессонные ночи. Берем те, где пользователь спал (переход через дату или уснул до 6)
                 .filter(s ->
                         // лёг спать в один день, а проснулся на следующий
-                        !(s.getSessionEnd().getDayOfYear() == s.getSessionStart().getDayOfYear() + 1)
-                                // или лёг спать после 00:00, но до 6:00
-                                || (s.getSessionStart().getHour() < 6
-                                && s.getSessionEnd().getHour() >= 6
-                                && s.getSessionEnd().getMinute() > 0
-                        )
+                        (s.getSessionEnd().getDayOfYear() == s.getSessionStart().getDayOfYear() + 1)
+                                // или лёг спать после 00:00, но до 6:00, проснулся в тот же день
+                                || (s.getSessionEnd().getDayOfYear() == s.getSessionStart().getDayOfYear()
+                                && s.getSessionStart().getHour() < 6)
                 )
                 .toList();
 
         List<SleepingSession> nightOwlSessions = sessionsWithoutSleeplessNightsAndDaily.stream()
                 .filter(s ->
-                        // Уснул позже 23, проснулся на следующий день после 9 утра
+                        // Уснул после 23, проснулся на следующий день после 9 утра
                         (s.getSessionEnd().getDayOfYear() == s.getSessionStart().getDayOfYear() + 1
                                 && s.getSessionStart().getHour() == 23
+                                && s.getSessionStart().getMinute() > 0
                                 && s.getSessionEnd().getHour() >= 9
                                 && s.getSessionEnd().getMinute() > 0
                         )
@@ -82,7 +83,7 @@ public class UserChronotypeAnalysis implements SleepingAnalysis {
                 )
                 .toList();
 
-        int totalDaysCount = sessionsWithoutSleeplessNightsAndDaily.stream()
+        int totalNights = sessionsWithoutSleeplessNightsAndDaily.stream()
                 .map(session -> LocalDate.from(session.getSessionStart()))
                 .collect(Collectors.toSet())
                 .size();
@@ -97,7 +98,7 @@ public class UserChronotypeAnalysis implements SleepingAnalysis {
                 .collect(Collectors.toSet())
                 .size();
 
-        int doveDaysCount = totalDaysCount - nightOwlDaysCount - earlyBirdDaysCount;
+        int doveDaysCount = totalNights - nightOwlDaysCount - earlyBirdDaysCount;
 
         if (nightOwlDaysCount > earlyBirdDaysCount && nightOwlDaysCount > doveDaysCount) {
             return new SleepAnalysisResult<>(ANALYSIS_DESCRIPTION, Chronotype.NIGHT_OWL);
