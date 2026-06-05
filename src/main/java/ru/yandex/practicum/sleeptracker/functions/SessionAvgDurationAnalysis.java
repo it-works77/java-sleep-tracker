@@ -4,7 +4,6 @@ import ru.yandex.practicum.sleeptracker.model.SleepAnalysisResult;
 import ru.yandex.practicum.sleeptracker.model.SleepingSession;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.TreeMap;
 
 public class SessionAvgDurationAnalysis implements SleepingAnalysis {

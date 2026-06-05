@@ -34,7 +34,6 @@ public class SessionSleeplessNightsAnalysis implements SleepingAnalysis {
                                 && s.getSessionStart().getHour() >= 6
                         )
                 )
-                .peek(session -> System.out.println(session.getSessionStart() + " - " + session.getSessionEnd()))
                 //  Оставляем ночные сессии
                 .filter(s ->
                         // лёг спать в один день, а проснулся на следующий

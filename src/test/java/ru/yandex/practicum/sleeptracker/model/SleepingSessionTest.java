@@ -7,19 +7,6 @@ import java.time.format.DateTimeFormatter;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SleepingSessionTest {
-
-    @Test
-    void getSessionStart() {
-    }
-
-    @Test
-    void getSessionEnd() {
-    }
-
-    @Test
-    void getQuality() {
-    }
-
     @Test
     void getDuration() {
         SleepingSession s = new SleepingSession("01.01.26 00:00",

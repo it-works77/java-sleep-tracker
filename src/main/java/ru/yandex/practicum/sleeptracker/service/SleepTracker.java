@@ -41,7 +41,7 @@ public class SleepTracker {
                                 String[] lineTokens = line.split(";");
 
                                 if (lineTokens.length == LOG_TOKENS_NUMBER) {
-                                    SleepingSession ss = null;
+                                    SleepingSession ss;
                                     try {
                                         ss = new SleepingSession(lineTokens[0],
                                                 lineTokens[1],
