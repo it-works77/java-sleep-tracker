@@ -6,7 +6,7 @@ import ru.yandex.practicum.sleeptracker.model.SleepingSession;
 import java.time.LocalDateTime;
 import java.util.TreeMap;
 
-public class SessionNumberAnalysis implements SleepingAnalysis {
+public class SessionNumberAnalysis implements SleepingAnalysis<Integer> {
     private static final String ANALYSIS_DESCRIPTION = "Количество сессий сна";
 
     @Override

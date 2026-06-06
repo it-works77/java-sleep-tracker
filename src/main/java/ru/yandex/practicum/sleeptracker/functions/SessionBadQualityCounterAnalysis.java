@@ -7,7 +7,7 @@ import ru.yandex.practicum.sleeptracker.model.SleepingSession;
 import java.time.LocalDateTime;
 import java.util.TreeMap;
 
-public class SessionBadQualityCounterAnalysis implements SleepingAnalysis {
+public class SessionBadQualityCounterAnalysis implements SleepingAnalysis<Long> {
     private static final String ANALYSIS_DESCRIPTION = "Количество сессий с плохим качеством сна";
 
     @Override

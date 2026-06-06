@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-public class SessionSleeplessNightsAnalysis implements SleepingAnalysis {
+public class SessionSleeplessNightsAnalysis implements SleepingAnalysis<Integer> {
     private static final String ANALYSIS_DESCRIPTION = "Количество бессонных ночей";
 
     @Override

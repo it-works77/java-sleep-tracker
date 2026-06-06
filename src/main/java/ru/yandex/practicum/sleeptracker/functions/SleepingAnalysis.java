@@ -7,6 +7,6 @@ import java.time.LocalDateTime;
 import java.util.TreeMap;
 
 @FunctionalInterface
-public interface SleepingAnalysis {
-    SleepAnalysisResult<?> get(TreeMap<LocalDateTime, SleepingSession> sessions);
+public interface SleepingAnalysis<T> {
+    SleepAnalysisResult<T> get(TreeMap<LocalDateTime, SleepingSession> sessions);
 }

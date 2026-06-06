@@ -24,9 +24,9 @@ public class SleepTracker {
 
     private final String sleepLogFile;
     private final TreeMap<LocalDateTime, SleepingSession> sleepingSessionJournal;
-    private final ArrayList<SleepingAnalysis> analyticFunctions;
+    private final ArrayList<SleepingAnalysis<?>> analyticFunctions;
 
-    public SleepTracker(String sleepLogFile, ArrayList<SleepingAnalysis> analyticFunctions) {
+    public SleepTracker(String sleepLogFile, ArrayList<SleepingAnalysis<?>> analyticFunctions) {
         this.sleepLogFile = sleepLogFile;
         sleepingSessionJournal = new TreeMap<>();
         this.analyticFunctions = analyticFunctions;

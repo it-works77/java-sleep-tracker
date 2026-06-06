@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.TreeMap;
 
-public class SessionMaxDurationAnalysis implements SleepingAnalysis {
+public class SessionMaxDurationAnalysis implements SleepingAnalysis<Integer> {
     private static final String ANALYSIS_DESCRIPTION = "Максимальная продолжительность сессии (в минутах)";
 
     @Override

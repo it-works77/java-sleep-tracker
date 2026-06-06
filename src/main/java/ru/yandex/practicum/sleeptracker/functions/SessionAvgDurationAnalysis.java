@@ -6,7 +6,7 @@ import ru.yandex.practicum.sleeptracker.model.SleepingSession;
 import java.time.LocalDateTime;
 import java.util.TreeMap;
 
-public class SessionAvgDurationAnalysis implements SleepingAnalysis {
+public class SessionAvgDurationAnalysis implements SleepingAnalysis<Integer> {
     private static final String ANALYSIS_DESCRIPTION = "Средняя продолжительность сессии (в минутах)";
 
     @Override

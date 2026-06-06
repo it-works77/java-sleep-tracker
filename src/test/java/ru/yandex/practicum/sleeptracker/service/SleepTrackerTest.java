@@ -1,5 +1,7 @@
 package ru.yandex.practicum.sleeptracker.service;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.sleeptracker.functions.*;
 import ru.yandex.practicum.sleeptracker.model.SleepAnalysisResult;
@@ -11,9 +13,20 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SleepTrackerTest {
 
+    static ArrayList<SleepingAnalysis<?>> analyticFunctions;
+
+    @BeforeAll
+    static void setUpAll() {
+         analyticFunctions = new ArrayList<>();
+    }
+
+    @BeforeEach
+    void setUp() {
+        analyticFunctions.clear();
+    }
+
     @Test
     void initWrongDateTimeFormat() {
-        ArrayList<SleepingAnalysis> analyticFunctions = new ArrayList<>();
         analyticFunctions.add(new SessionNumberAnalysis());
         SleepTracker st = new SleepTracker("./src/test/resources/sleep_log_wrong_datetime.txt",
                 analyticFunctions);
@@ -29,7 +42,6 @@ class SleepTrackerTest {
 
     @Test
     void initWrongSleepQuality() {
-        ArrayList<SleepingAnalysis> analyticFunctions = new ArrayList<>();
         analyticFunctions.add(new SessionNumberAnalysis());
         SleepTracker st = new SleepTracker("./src/test/resources/sleep_log_wrong_quality.txt",
                 analyticFunctions);
@@ -45,7 +57,6 @@ class SleepTrackerTest {
 
     @Test
     void initSameSessionStartTime() {
-        ArrayList<SleepingAnalysis> analyticFunctions = new ArrayList<>();
         analyticFunctions.add(new SessionNumberAnalysis());
         SleepTracker st = new SleepTracker("./src/test/resources/sleep_log_check_doubles.txt",
                 analyticFunctions);
@@ -61,7 +72,6 @@ class SleepTrackerTest {
 
     @Test
     void initSkipIncorrectLines() {
-        ArrayList<SleepingAnalysis> analyticFunctions = new ArrayList<>();
         analyticFunctions.add(new SessionNumberAnalysis());
         SleepTracker st = new SleepTracker("./src/test/resources/sleep_log_wrong_lines_one_correct.txt",
                 analyticFunctions);
@@ -77,7 +87,6 @@ class SleepTrackerTest {
 
     @Test
     void getAnalytics() {
-        ArrayList<SleepingAnalysis> analyticFunctions = new ArrayList<>();
         analyticFunctions.add(new SessionNumberAnalysis());
         analyticFunctions.add(new SessionMaxDurationAnalysis());
         analyticFunctions.add(new SessionMinDurationAnalysis());

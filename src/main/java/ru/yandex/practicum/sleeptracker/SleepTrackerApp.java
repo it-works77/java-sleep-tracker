@@ -8,12 +8,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SleepTrackerApp {
-    public static final String SLEEP_LOG_FILEPATH = "./src/main/resources/sleep_log.txt";
-
 
     public static void main(String[] args) {
 
-        ArrayList<SleepingAnalysis> analyticFunctions = new ArrayList<>();
+        // Приложение должно принимать на вход как аргумент командной строки путь к файлу с логом сна
+        if (args.length != 1) {
+            System.out.println("Завершение работы. " +
+                    "Необходимо указать как аргумент командной строки путь к файлу с логом сна");
+            System.out.println("Например:\njava " + SleepTrackerApp.class.getSimpleName() +
+                    " ./src/main/resources/sleep_log.txt");
+            return;
+        }
+        String sleepLogFilePath = args[0];
+
+        ArrayList<SleepingAnalysis<?>> analyticFunctions = new ArrayList<>();
         analyticFunctions.add(new SessionNumberAnalysis());
         analyticFunctions.add(new SessionMaxDurationAnalysis());
         analyticFunctions.add(new SessionMinDurationAnalysis());
@@ -22,7 +30,7 @@ public class SleepTrackerApp {
         analyticFunctions.add(new UserChronotypeAnalysis());
         analyticFunctions.add(new SessionSleeplessNightsAnalysis());
 
-        SleepTracker app = new SleepTracker(SLEEP_LOG_FILEPATH, analyticFunctions);
+        SleepTracker app = new SleepTracker(sleepLogFilePath, analyticFunctions);
         app.init();
 
         /* Функции должны запускаться в методе main, а результат их выполнения должен выводиться на экран.

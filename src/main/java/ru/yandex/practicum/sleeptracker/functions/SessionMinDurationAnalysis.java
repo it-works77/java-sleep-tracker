@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.TreeMap;
 
-public class SessionMinDurationAnalysis implements SleepingAnalysis {
+public class SessionMinDurationAnalysis implements SleepingAnalysis<Integer> {
     private static final String ANALYSIS_DESCRIPTION = "Минимальная продолжительность сессии (в минутах)";
 
     @Override

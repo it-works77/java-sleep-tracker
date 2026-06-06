@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class UserChronotypeAnalysis implements SleepingAnalysis {
+public class UserChronotypeAnalysis implements SleepingAnalysis<Chronotype> {
     private static final String ANALYSIS_DESCRIPTION = "Хронотип пользователя";
 
     @Override
@@ -37,7 +37,73 @@ public class UserChronotypeAnalysis implements SleepingAnalysis {
             return new SleepAnalysisResult<>(ANALYSIS_DESCRIPTION);
         }
 
-        List<SleepingSession> sessionsWithoutSleeplessNightsAndDaily = sessions.values().stream()
+        // Отбираем требуемые сессии определенного типа
+        List<SleepingSession> sessionsWithoutSleeplessNightsAndDaily = getSessionsWithNightSleep(sessions);
+
+        List<SleepingSession> nightOwlSessions = getNightOwlSessions(sessionsWithoutSleeplessNightsAndDaily);
+        List<SleepingSession> earlyBirdSessions = getEarlyBirdSessions(sessionsWithoutSleeplessNightsAndDaily);
+
+        // Определяем хронотип пользователя
+        return getChronotypeSleepAnalysisResult(sessionsWithoutSleeplessNightsAndDaily,
+                nightOwlSessions,
+                earlyBirdSessions);
+    }
+
+    private static SleepAnalysisResult<Chronotype> getChronotypeSleepAnalysisResult(List<SleepingSession> sessionsWithoutSleeplessNightsAndDaily, List<SleepingSession> nightOwlSessions, List<SleepingSession> earlyBirdSessions) {
+        int totalNights = getNightsCount(sessionsWithoutSleeplessNightsAndDaily);
+        int nightOwlDaysCount = getNightsCount(nightOwlSessions);
+        int earlyBirdDaysCount = getNightsCount(earlyBirdSessions);
+
+        int doveDaysCount = totalNights - nightOwlDaysCount - earlyBirdDaysCount;
+
+        if (nightOwlDaysCount > earlyBirdDaysCount && nightOwlDaysCount > doveDaysCount) {
+            return new SleepAnalysisResult<>(ANALYSIS_DESCRIPTION, Chronotype.NIGHT_OWL);
+        } else if (earlyBirdDaysCount > nightOwlDaysCount && earlyBirdDaysCount > doveDaysCount) {
+            return new SleepAnalysisResult<>(ANALYSIS_DESCRIPTION, Chronotype.EARLY_BIRD);
+        } else {
+            return new SleepAnalysisResult<>(ANALYSIS_DESCRIPTION, Chronotype.DOVE);
+        }
+    }
+
+    private static int getNightsCount(List<SleepingSession> sessionsWithoutSleeplessNightsAndDaily) {
+        return sessionsWithoutSleeplessNightsAndDaily.stream()
+                .map(session -> LocalDate.from(session.getSessionStart()))
+                .collect(Collectors.toSet())
+                .size();
+    }
+
+    private static List<SleepingSession> getEarlyBirdSessions(List<SleepingSession> sessionsWithoutSleeplessNightsAndDaily) {
+        return sessionsWithoutSleeplessNightsAndDaily.stream()
+                .filter(s ->
+                        // Уснул раньше 22, проснулся на следующий день до 7 утра
+                        s.getSessionEnd().getDayOfYear() == s.getSessionStart().getDayOfYear() + 1
+                                && s.getSessionStart().getHour() < 22
+                                && s.getSessionEnd().getHour() < 7
+                )
+                .toList();
+    }
+
+    private static List<SleepingSession> getNightOwlSessions(List<SleepingSession> sessionsWithoutSleeplessNightsAndDaily) {
+        return sessionsWithoutSleeplessNightsAndDaily.stream()
+                .filter(s ->
+                        // Уснул после 23, проснулся на следующий день после 9 утра
+                        (s.getSessionEnd().getDayOfYear() == s.getSessionStart().getDayOfYear() + 1
+                                && s.getSessionStart().getHour() == 23
+                                && s.getSessionStart().getMinute() > 0
+                                && s.getSessionEnd().getHour() >= 9
+                                && s.getSessionEnd().getMinute() > 0
+                        )
+                                // или уснул после 00:00 включительно до 9:00 и проснулся после 9 утра
+                                || (s.getSessionStart().getHour() < 9
+                                && s.getSessionEnd().getHour() >= 9
+                                && s.getSessionEnd().getMinute() > 0
+                        )
+                )
+                .toList();
+    }
+
+    private static List<SleepingSession> getSessionsWithNightSleep(TreeMap<LocalDateTime, SleepingSession> sessions) {
+        return sessions.values().stream()
                 /* Исключаем дневные сессии сна
                  * Интервал ночного сна с 6:00 до 00:00.
                  * Достаточно проверить, что уснул после 6:00 и проснулся в тот же день.
@@ -55,56 +121,5 @@ public class UserChronotypeAnalysis implements SleepingAnalysis {
                                 && s.getSessionStart().getHour() < 6)
                 )
                 .toList();
-
-        List<SleepingSession> nightOwlSessions = sessionsWithoutSleeplessNightsAndDaily.stream()
-                .filter(s ->
-                        // Уснул после 23, проснулся на следующий день после 9 утра
-                        (s.getSessionEnd().getDayOfYear() == s.getSessionStart().getDayOfYear() + 1
-                                && s.getSessionStart().getHour() == 23
-                                && s.getSessionStart().getMinute() > 0
-                                && s.getSessionEnd().getHour() >= 9
-                                && s.getSessionEnd().getMinute() > 0
-                        )
-                                // или уснул после 00:00 включительно до 9:00 и проснулся после 9 утра
-                                || (s.getSessionStart().getHour() < 9
-                                && s.getSessionEnd().getHour() >= 9
-                                && s.getSessionEnd().getMinute() > 0
-                        )
-                )
-                .toList();
-
-        List<SleepingSession> earlyBirdSessions = sessionsWithoutSleeplessNightsAndDaily.stream()
-                .filter(s ->
-                        // Уснул раньше 22, проснулся на следующий день до 7 утра
-                        s.getSessionEnd().getDayOfYear() == s.getSessionStart().getDayOfYear() + 1
-                                && s.getSessionStart().getHour() < 22
-                                && s.getSessionEnd().getHour() < 7
-                )
-                .toList();
-
-        int totalNights = sessionsWithoutSleeplessNightsAndDaily.stream()
-                .map(session -> LocalDate.from(session.getSessionStart()))
-                .collect(Collectors.toSet())
-                .size();
-
-        int nightOwlDaysCount = nightOwlSessions.stream()
-                .map(session -> LocalDate.from(session.getSessionStart()))
-                .collect(Collectors.toSet())
-                .size();
-
-        int earlyBirdDaysCount = earlyBirdSessions.stream()
-                .map(session -> LocalDate.from(session.getSessionStart()))
-                .collect(Collectors.toSet())
-                .size();
-
-        int doveDaysCount = totalNights - nightOwlDaysCount - earlyBirdDaysCount;
-
-        if (nightOwlDaysCount > earlyBirdDaysCount && nightOwlDaysCount > doveDaysCount) {
-            return new SleepAnalysisResult<>(ANALYSIS_DESCRIPTION, Chronotype.NIGHT_OWL);
-        } else if (earlyBirdDaysCount > nightOwlDaysCount && earlyBirdDaysCount > doveDaysCount) {
-            return new SleepAnalysisResult<>(ANALYSIS_DESCRIPTION, Chronotype.EARLY_BIRD);
-        } else {
-            return new SleepAnalysisResult<>(ANALYSIS_DESCRIPTION, Chronotype.DOVE);
-        }
     }
 }
